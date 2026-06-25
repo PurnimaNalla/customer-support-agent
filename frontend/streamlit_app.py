@@ -1,5 +1,5 @@
 import streamlit as st
-import requests
+from backend.agent import support_agent
 
 st.title("Customer Support Agent")
 
@@ -7,7 +7,6 @@ if "messages" not in st.session_state:
     st.session_state.messages = []
 
 for role, msg in st.session_state.messages:
-
     with st.chat_message(role):
         st.write(msg)
 
@@ -20,16 +19,9 @@ if user_input:
     )
 
     try:
-
-        response = requests.post(
-            "http://backend:8000/chat",
-            json={"message": user_input}
-        )
-
-        bot_reply = response.json()["response"]
+        bot_reply = support_agent(user_input)
 
     except Exception as e:
-
         bot_reply = f"Error: {e}"
 
     st.session_state.messages.append(
